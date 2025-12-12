@@ -18,14 +18,11 @@ public:
     //==============================================================================
     void initialise (const String& commandLine) override
     {
-
         mainWindow.reset (new MainWindow (getApplicationName()));
     }
 
     void shutdown() override
     {
-        
-
         mainWindow = nullptr;
     }
 
