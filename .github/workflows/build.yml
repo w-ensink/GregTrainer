@@ -1,0 +1,53 @@
+name: Build (macOS + Windows)
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      # Optional but nice: ensures a recent CMake on runners
+      - name: Setup CMake
+        uses: lukka/get-cmake@v3.31.1
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release
+
+      # Windows multi-config generators (Visual Studio) need --config Release.
+      - name: Build
+        run: cmake --build build --config Release
+
+      # Upload macOS .app bundle
+      - name: Upload macOS app
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: GregTrainer-macOS
+          path: build/GregTrainer_artifacts/Release/GregTrainer.app
+          if-no-files-found: error
+
+      # Upload Windows .exe
+      - name: Upload Windows exe
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: GregTrainer-Windows
+          path: build/GregTrainer_artifacts/Release/GregTrainer.exe
+          if-no-files-found: error
