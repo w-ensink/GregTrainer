@@ -30,11 +30,7 @@ jobs:
           cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
-        run: |
-          cmake --build build --config Release
-          ls -la build
-          ls -la build/GregTrainer_artefacts
-          ls -la build/GregTrainer_artefacts/Release
+        run: cmake --build build --config Release
 
       - name: Upload macOS app
         if: runner.os == 'macOS'
