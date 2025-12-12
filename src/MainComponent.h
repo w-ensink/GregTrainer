@@ -2,27 +2,29 @@
 
 #pragma once
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <juce_gui_extra/juce_gui_extra.h>
+#include <juce_audio_utils/juce_audio_utils.h>
+
 #include "GridDisplayComponent.h"
 #include "MelodyGenerator.h"
 #include "TrainerEngine.h"
 #include "ExtraMenus.h"
 #include "AnswerChecker.h"
 
-class MainComponent   : public AudioAppComponent
+class MainComponent   : public juce::AudioAppComponent
 {
 public:
     //==============================================================================
-    MainComponent (ValueTree& v);
-    ~MainComponent();
+    MainComponent (juce::ValueTree& v);
+    ~MainComponent() override;
 
     //==============================================================================
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
+    void getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill) override;
     void releaseResources() override;
 
     //==============================================================================
-    void paint (Graphics& g) override;
+    void paint (juce::Graphics& g) override;
     void resized() override;
     //==============================================================================
     
@@ -35,15 +37,15 @@ private:
     
     void initializeAudioSettings();
     
-    TextButton playButton       { "Start Playing"       };
-    TextButton generateButton   { "Generate Melody"     };
-    TextButton submitButton     { "Submit Answer"       };
-    TextButton infoButton       { "i"                   };
+    juce::TextButton playButton       { "Start Playing"       };
+    juce::TextButton generateButton   { "Generate Melody"     };
+    juce::TextButton submitButton     { "Submit Answer"       };
+    juce::TextButton infoButton       { "i"                   };
     //TextButton colourPickButton { "Open Colour Picker"  };
     
-    Label answerLabel ;
+    juce::Label answerLabel ;
     
-    ValueTree tree;
+    juce::ValueTree tree;
 
     GridDisplayComponent gridDisplay;
     

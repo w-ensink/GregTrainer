@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.22)
 project(GREG_TRAINER VERSION 0.0.1)
 
+
+add_subdirectory(JUCE)
+
 juce_add_gui_app(GregTrainer
     # VERSION ...                       # Set this if the app version is different to the project version
     # ICON_BIG ...                      # ICON_* arguments specify a path to an image file to use as an icon
@@ -41,7 +44,7 @@ target_link_libraries(GregTrainer
         # GuiAppData            # If we'd created a binary data target, we'd link to it here
         juce::juce_gui_extra
         juce::juce_audio_basics
-        juce::juce_audio_basics
+        juce::juce_audio_utils
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags

@@ -10,76 +10,68 @@
 
 #pragma once
 
-#include "../JuceLibraryCode/JuceHeader.h"
-
 //========================================================================================
-// Some Utility functions and classes to make things a little cleaner and more confinient
+// Some Utility functions and classes to make things a little cleaner and more
+// confinient
 
 //========================================================================================
 // prints all its agruments to cout, with spaces inbetween them
 
+#include "juce_gui_basics/juce_gui_basics.h"
+#include <iostream>
 template <typename... IOStreamableType>
-auto print (IOStreamableType&&... arguments) noexcept
-{
-    ([] (auto&& argument) { std::cout << argument << " "; } (arguments), ...);
-    
-    std::cout << '\n';
-}
+auto print(IOStreamableType &&...arguments) noexcept {
+  ([](auto &&argument) { std::cout << argument << " "; }(arguments), ...);
 
+  std::cout << '\n';
+}
 
 //========================================================================================
 // Enables you to do an action to multiple components at once
 
-
 template <typename Function>
-auto visitComponents (const Array<Component*>& components, const Function& function) noexcept
-{
-    for (auto* c : components) function (*c);
+auto visitComponents(const juce::Array<juce::Component *> &components,
+                     const Function &function) noexcept {
+  for (auto *c : components)
+    function(*c);
 }
-
 
 //========================================================================================
 // Combined with structured bindings this provides a much cleaner and quicker
 // way of getting x, y, w, h from some bounds for example
 
-
 template <typename T>
-auto getRectangleDimentions (const Rectangle<T>& r) noexcept
-{
-    return std::tuple { r.getX(), r.getY(), r.getWidth(), r.getHeight() };
+auto getRectangleDimentions(const juce::Rectangle<T> &r) noexcept {
+  return std::tuple{r.getX(), r.getY(), r.getWidth(), r.getHeight()};
 }
-
 
 //========================================================================================
 // Swift like Property with a getter and setter that can compute
 // both the internal value aswel as the value of another variable
 // when assigned a new value
 
-
-template <typename T>
-class Property
-{
+template <typename T> class Property {
 public:
-    operator T() { return get (value); }
-    void operator= (T v) { value = set(v); }
-    
-    std::function<T(T)> set;
-    std::function<T(T)> get;
-    T value;
+  operator T() { return get(value); }
+  void operator=(T v) { value = set(v); }
+
+  std::function<T(T)> set;
+  std::function<T(T)> get;
+  T value;
 };
 
-
 //========================================================================================
-// So we don't have to implement all of these methods everytime we inherent from ValueTree::Listener
+// So we don't have to implement all of these methods everytime we inherent from
+// ValueTree::Listener
 
-
-class TreeListener   : public ValueTree::Listener
-{
+class TreeListener : public juce::ValueTree::Listener {
 public:
-    void valueTreePropertyChanged (ValueTree&, const Identifier&) override { }
-    void valueTreeChildAdded (ValueTree&, ValueTree&) override { }
-    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override { }
-    void valueTreeChildOrderChanged (ValueTree&, int, int) override { }
-    void valueTreeParentChanged (ValueTree&) override { }
-    void valueTreeRedirected (ValueTree&) override { }
+  void valueTreePropertyChanged(juce::ValueTree &,
+                                const juce::Identifier &) override {}
+  void valueTreeChildAdded(juce::ValueTree &, juce::ValueTree &) override {}
+  void valueTreeChildRemoved(juce::ValueTree &, juce::ValueTree &,
+                             int) override {}
+  void valueTreeChildOrderChanged(juce::ValueTree &, int, int) override {}
+  void valueTreeParentChanged(juce::ValueTree &) override {}
+  void valueTreeRedirected(juce::ValueTree &) override {}
 };

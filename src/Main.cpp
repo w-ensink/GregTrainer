@@ -1,89 +1,72 @@
+#include <juce_gui_basics/juce_gui_basics.h>
+#include <juce_gui_extra/juce_gui_extra.h>
 
-
-#include "../JuceLibraryCode/JuceHeader.h"
 #include "MainComponent.h"
 
 //==============================================================================
 
-class GregTrainerApplication  : public JUCEApplication
-{
+class GregTrainerApplication : public juce::JUCEApplication {
 public:
-    //==============================================================================
-    GregTrainerApplication() {}
+  //==============================================================================
+  GregTrainerApplication() {}
 
-    const String getApplicationName() override       { return ProjectInfo::projectName; }
-    const String getApplicationVersion() override    { return ProjectInfo::versionString; }
-    bool moreThanOneInstanceAllowed() override       { return true; }
+  const juce::String getApplicationName() override { return "GregTrainer"; }
+  const juce::String getApplicationVersion() override { return "0.0.1"; }
+  bool moreThanOneInstanceAllowed() override { return true; }
 
-    //==============================================================================
-    void initialise (const String& commandLine) override
-    {
-        mainWindow.reset (new MainWindow (getApplicationName()));
+  //==============================================================================
+  void initialise(const juce::String &commandLine) override {
+    mainWindow.reset(new MainWindow(getApplicationName()));
+  }
+
+  void shutdown() override { mainWindow = nullptr; }
+
+  //==============================================================================
+  void systemRequestedQuit() override { quit(); }
+
+  void anotherInstanceStarted(const juce::String &commandLine) override {}
+
+  //==============================================================================
+  /*
+      This class implements the desktop window that contains an instance of
+      our MainComponent class.
+  */
+  class MainWindow : public juce::DocumentWindow {
+  public:
+    MainWindow(juce::String name)
+        : juce::DocumentWindow(
+              name,
+              juce::Desktop::getInstance().getDefaultLookAndFeel().findColour(
+                  ResizableWindow::backgroundColourId),
+              DocumentWindow::allButtons),
+          tree(IDs::GlobalRoot) {
+      setUsingNativeTitleBar(true);
+      setContentOwned(new MainComponent(tree), true);
+
+#if JUCE_IOS || JUCE_ANDROID
+      setFullScreen(true);
+#else
+      setResizable(true, true);
+      centreWithSize(getWidth(), getHeight());
+#endif
+
+      setVisible(true);
     }
 
-    void shutdown() override
-    {
-        mainWindow = nullptr;
+    void closeButtonPressed() override {
+      JUCEApplication::getInstance()->systemRequestedQuit();
     }
 
-    //==============================================================================
-    void systemRequestedQuit() override
-    {
-        quit();
-    }
+  private:
+    juce::ValueTree tree;
 
-    void anotherInstanceStarted (const String& commandLine) override
-    {
-        
-    }
-
-    //==============================================================================
-    /*
-        This class implements the desktop window that contains an instance of
-        our MainComponent class.
-    */
-    class MainWindow    : public DocumentWindow
-    {
-    public:
-        MainWindow (String name)  : DocumentWindow (name,
-                                                    Desktop::getInstance().getDefaultLookAndFeel()
-                                                                          .findColour (ResizableWindow::backgroundColourId),
-                                                    DocumentWindow::allButtons),
-                                    tree (IDs::GlobalRoot)
-        {
-            setUsingNativeTitleBar (true);
-            setContentOwned (new MainComponent (tree), true);
-
-           #if JUCE_IOS || JUCE_ANDROID
-            setFullScreen (true);
-           #else
-            setResizable (true, true);
-            centreWithSize (getWidth(), getHeight());
-           #endif
-
-            setVisible (true);
-        }
-
-        void closeButtonPressed() override
-        {
-            JUCEApplication::getInstance()->systemRequestedQuit();
-        }
-
-
-    private:
-        
-        ValueTree tree;
-        
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
-    };
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
+  };
 
 private:
-    std::unique_ptr<MainWindow> mainWindow;
-    
-    
-    
+  std::unique_ptr<MainWindow> mainWindow;
 };
 
 //==============================================================================
 // This macro generates the main() routine that launches the app.
-START_JUCE_APPLICATION (GregTrainerApplication)
+START_JUCE_APPLICATION(GregTrainerApplication)
