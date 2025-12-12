@@ -1,17 +1,14 @@
 cmake_minimum_required(VERSION 3.22)
 project(GREG_TRAINER VERSION 0.0.1)
 
+# Enable static linking on Windows so we don't depend on runtime DLLs
+if (MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
 
 add_subdirectory(JUCE)
 
-juce_add_gui_app(GregTrainer
-    # VERSION ...                       # Set this if the app version is different to the project version
-    # ICON_BIG ...                      # ICON_* arguments specify a path to an image file to use as an icon
-    # ICON_SMALL ...
-    # DOCUMENT_EXTENSIONS ...           # Specify file extensions that should be associated with this app
-    # COMPANY_NAME ...                  # Specify the name of the app's author
-    PRODUCT_NAME "GregTrainer"
-)
+juce_add_gui_app(GregTrainer PRODUCT_NAME "GregTrainer")
 
 target_sources(GregTrainer
     PRIVATE
@@ -41,7 +38,6 @@ target_compile_definitions(GregTrainer
 
 target_link_libraries(GregTrainer
     PRIVATE
-        # GuiAppData            # If we'd created a binary data target, we'd link to it here
         juce::juce_gui_extra
         juce::juce_audio_basics
         juce::juce_audio_utils
