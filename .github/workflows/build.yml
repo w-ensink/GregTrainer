@@ -32,12 +32,19 @@ jobs:
       - name: Build
         run: cmake --build build --config Release
 
-      - name: Upload macOS app
+      - name: Zip macOS .app bundle
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          APP="build/GregTrainer_artefacts/Release/GregTrainer.app"
+          ditto -c -k --sequesterRsrc --keepParent "$APP" GregTrainer-macOS.zip
+
+      - name: Upload macOS app (zipped)
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v4
         with:
           name: GregTrainer-macOS
-          path: build/GregTrainer_artefacts/Release/GregTrainer.app
+          path: GregTrainer-macOS.zip
           if-no-files-found: error
 
       - name: Upload Windows exe
